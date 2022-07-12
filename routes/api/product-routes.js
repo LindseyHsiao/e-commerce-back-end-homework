@@ -6,7 +6,9 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // get all products
 router.get('/', (req, res) => {
   // find all products
-  Product.findAll()
+  Product.findAll({
+    include: [Category, Tag] //Is this correct??
+  })
     .then(dbProductData => res.json(dbProductData))
     .catch(err => {
       console.log(err);
@@ -17,8 +19,10 @@ router.get('/', (req, res) => {
 
 // get one product
 router.get('/:id', (req, res) => {
+   
   // find a single product by its `id`
   Product.findOne({
+    include: [Category, Tag],
     where: {
       id: req.params.id
     }
@@ -34,20 +38,20 @@ router.get('/:id', (req, res) => {
       console.log(err);
       res.status(500).json(err);
     });
-  // be sure to include its associated Category and Tag data
+  // be sure to include its associated Category and Tag data-- check on this
 });
 
 // create new product
 router.post('/', (req, res) => {
  
-  /* req.body should look like this...
-    {
-      product_name: "Basketball",
-      price: 200.00,
-      stock: 3,
-      tagIds: [1, 2, 3, 4]
-    }
-  */
+  //req.body should look like this...
+    // {
+    //   product_name: "Basketball",
+    //   price: 200.00,
+    //   stock: 3,
+    //   tagIds: [1, 2, 3, 4]
+    // }
+  // what is happening here??
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -114,6 +118,22 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  Product.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(dbProductData => {
+      if (!dbProductData) {
+        res.status(404).json({ message: 'No category found with this id' });
+        return;
+      }
+      res.json(dbProductData);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 module.exports = router;

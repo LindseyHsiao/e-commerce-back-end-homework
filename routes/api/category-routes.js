@@ -7,7 +7,9 @@ const { Category, Product } = require('../../models');
 // find all categories
 router.get('/', (req, res) => {
   // Access our category model and run .findAll() method
-  Category.findAll()
+  Category.findAll({
+    include: [Product]
+  })
     .then(dbCategoryData => res.json(dbCategoryData))
     .catch(err => {
       console.log(err);
@@ -21,9 +23,11 @@ router.get('/:id', (req, res) => {
   // find one category by its `id` value
 
   Category.findOne({
+    include: [Product],//is this correct? compare to 13.3.6
     where: {
       id: req.params.id
-    }
+    },
+    
   })
     .then(dbCategoryData => {
       if (!dbCategoryData) {
@@ -42,9 +46,7 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   // create a new category
-  Category.create({
-    category: req.body.category_name
-  })
+  Category.create(req.body)
     .then(dbCategoryData => res.json(dbCategoryData))
     .catch(err => {
       console.log(err);
