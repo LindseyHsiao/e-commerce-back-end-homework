@@ -23,11 +23,10 @@ router.get('/:id', (req, res) => {
   // find one category by its `id` value
 
   Category.findOne({
-    include: [Product],//is this correct? compare to 13.3.6
     where: {
       id: req.params.id
     },
-    
+    include: [Product]
   })
     .then(dbCategoryData => {
       if (!dbCategoryData) {

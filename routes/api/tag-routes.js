@@ -5,13 +5,18 @@ const { Tag, Product, ProductTag } = require('../../models');
 
 router.get('/', (req, res) => {
   // find all tags
-  Tag.findAll()
+  Tag.findAll({
+    // be sure to include its associated Product data
+    include: [{
+      model: Product,
+      through: ProductTag
+    }]
+  })
     .then(dbTagData => res.json(dbTagData))
     .catch(err => {
       console.log(err);
       res.status(500).json(err);
     });
-  // be sure to include its associated Product data
 });
 
 router.get('/:id', (req, res) => {
@@ -19,7 +24,11 @@ router.get('/:id', (req, res) => {
   Tag.findOne({
     where: {
       id: req.params.id
-    }
+    },
+    include: [{
+      model: Product,
+      through: ProductTag
+    }]
   })
     .then(dbTagData => {
       if (!dbTagData) {
@@ -37,9 +46,7 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   // create a new tag
-  Tag.create({
-    category: req.body.category_name//update this!
-  })
+  Tag.create(req.body) //req.body already has tag_name object
     .then(dbTagData => res.json(dbTagData))
     .catch(err => {
       console.log(err);
@@ -79,7 +86,7 @@ router.delete('/:id', (req, res) => {
         res.status(404).json({ message: 'No tag found with this id' });
         return;
       }
-      res.json(dbTagData);
+      res.json({ message:`Tag id ${req.params.id} has been deleted` });
     })
     .catch(err => {
       console.log(err);
