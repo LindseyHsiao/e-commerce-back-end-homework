@@ -2,9 +2,9 @@
 
 ## Description
 
-  This application the back end for an e-commerce site. 
+  This application is the back end for an e-commerce site. 
 
-  [Video Walkthrough](https://watch.screencastify.com/v/aWpn8jv4uxlfapkkjC0f)
+  [Video Walkthrough](https://drive.google.com/file/d/1MfpiPKO3q71DwZfBLSkDaDMBX2ECAI9I/view)
 
 
 
